@@ -1,12 +1,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const Blog = require('./models/blog');
+const blogRoutes = require('./routes/blog');
+const { render } = require('ejs');
 // const morgan = require('morgan');
 const app = express();
 
 // Middleware & Static Files
 // app.use(morgan('dev'));
 app.use(express.static('public'));
+app.use(express.urlencoded({extended: true}));
 
 //Mongodb setup
 const dburl = "mongodb+srv://vinayak:test@123@trycluster.y2xml.mongodb.net/blog-site?retryWrites=true&w=majority";
@@ -29,20 +31,7 @@ app.get('/about', (req, res) => {
     // res.sendFile('./views/about.html', { root: __dirname });
 })
 
-app.get('/blogs', (req, res) => {
-    // res.sendFile('./views/index.html', {root: __dirname});
-    Blog.find().sort({ createdAt: -1 })
-        .then((result) => {
-            res.render('index', { title: 'Home', blogs: result });
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-})
-
-app.get('/blogs/create', (req, res) => {
-    res.render('create', { title: 'Create a new blog' });
-});
+app.use('/blogs',blogRoutes);
 
 // Always work.. but only if request reaches till here..
 // Keep at end
@@ -50,7 +39,6 @@ app.use((req, res) => {
     res.status(404).render('404', { title: '404' });
     // res.status(404).sendFile('./views/404.html', { root: __dirname });
 })
-
 
 // const http =  require('http');
 // const fs = require('fs');

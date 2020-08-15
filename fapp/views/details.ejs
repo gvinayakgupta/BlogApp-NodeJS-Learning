@@ -1,0 +1,31 @@
+<html lang="en">
+<%- include("./partials/head.ejs") %>
+
+<body>
+  <%- include("./partials/nav.ejs") %>
+
+  <div class="details content">
+    <h2><%= blog.title %></h2>
+    <div class="content">
+      <p><%= blog.body %></p>
+    </div>
+    <a class="delete" data-doc="<%= blog._id %> ">delete</a>
+  </div>
+
+  <%- include("./partials/footer.ejs") %>
+
+  <script>
+    const trash = document.querySelector('a.delete');
+    trash.addEventListener('click', (e) => {
+      var xh = new XMLHttpRequest;
+      xh.open("DELETE", `/blogs/${trash.dataset.doc}`, true);
+      xh.send();
+      xh.onload = function () {
+        const r = JSON.parse(this.responseText);
+        window.location.href = r.redirect;
+      }
+    })
+  </script>
+</body>
+
+</html>
